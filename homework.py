@@ -23,7 +23,7 @@ logger.addHandler(handler)
 
 PRACTICUM_TOKEN = os.getenv('PRAKTIKUM_TOKEN')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
-CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
+TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
 RETRY_TIME = 300
 RETRY_ERROR_TIME = 10
@@ -39,9 +39,10 @@ HOMEWORK_STATUSES = {
 
 def send_message(bot, message: str) -> None:
     """Отправка сообщения от бота."""
-    logging.info(f'Отправка сообщения: {message} на CHAT_ID: {CHAT_ID}')
+    logging.info(f'Отправка сообщения: {message}'
+                 f' на CHAT_ID: {TELEGRAM_CHAT_ID}')
     try:
-        return bot.send_message(chat_id=CHAT_ID, text=message)
+        return bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message)
     except telegram.error.TelegramError as sending_error:
         logging.error(f'Ошибка отправки Telegram: {sending_error}')
 
@@ -90,7 +91,7 @@ def parse_status(homework):
 
 def check_tokens():
     """Проверка токенов."""
-    tokens = [PRACTICUM_TOKEN, TELEGRAM_TOKEN, CHAT_ID]
+    tokens = [PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID]
     for token in tokens:
         if token is None:
             return False
@@ -100,7 +101,7 @@ def check_tokens():
 def main():
     """Запуск бота."""
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
-    current_timestamp = 0
+    current_timestamp = int(time.time())
     logging.info('Бот начинает работу')
     while True:
         try:
