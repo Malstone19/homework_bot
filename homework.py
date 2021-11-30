@@ -38,6 +38,7 @@ HOMEWORK_STATUSES = {
 
 
 def send_message(bot, message: str) -> None:
+    """Отправка сообщения от бота."""
     logging.info(f'Отправка сообщения: {message} на CHAT_ID: {CHAT_ID}')
     try:
         return bot.send_message(chat_id=CHAT_ID, text=message)
@@ -46,6 +47,7 @@ def send_message(bot, message: str) -> None:
 
 
 def get_api_answer(url, current_timestamp):
+    """Проверка ответа от API практикума."""
     current_timestamp = current_timestamp
     headers = {'Authorization': f'OAuth {PRACTICUM_TOKEN}'}
     params = {
@@ -65,6 +67,7 @@ def get_api_answer(url, current_timestamp):
 
 
 def check_response(response):
+    """Проверка запроса."""
     try:
         homeworks = response.get('homeworks')
         if len(homeworks) == 0:
@@ -75,6 +78,7 @@ def check_response(response):
 
 
 def parse_status(homework):
+    """Получение статуса работы."""
     homework_name = homework.get('homework_name')
     homework_status = homework.get('status')
     if homework_status in HOMEWORK_STATUSES:
@@ -85,6 +89,7 @@ def parse_status(homework):
 
 
 def check_tokens():
+    """Проверка токенов"""
     tokens = [PRACTICUM_TOKEN, TELEGRAM_TOKEN, CHAT_ID]
     for token in tokens:
         if token is None:
@@ -93,6 +98,7 @@ def check_tokens():
 
 
 def main():
+    """Запуск бота"""
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     current_timestamp = 0
     logging.info('Бот начинает работу')
