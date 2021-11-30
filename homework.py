@@ -47,7 +47,7 @@ def send_message(bot, message: str) -> None:
         logging.error(f'Ошибка отправки Telegram: {sending_error}')
 
 
-def get_api_answer(url, current_timestamp):
+def get_api_answer(current_timestamp):
     """Проверка ответа от API практикума."""
     current_timestamp = current_timestamp
     headers = {'Authorization': f'OAuth {PRACTICUM_TOKEN}'}
@@ -56,7 +56,7 @@ def get_api_answer(url, current_timestamp):
     }
     try:
         homework_statuses = requests.get(
-            url, params=params, headers=headers
+            ENDPOINT, params=params, headers=headers
         )
         if homework_statuses.status_code != HTTPStatus.OK:
             raise HTTPStatus.Internal_server_error(
@@ -105,7 +105,7 @@ def main():
     logging.info('Бот начинает работу')
     while True:
         try:
-            new_homework = get_api_answer(ENDPOINT, current_timestamp)
+            new_homework = get_api_answer(current_timestamp)
             logging.info('checking response')
             if check_response(new_homework):
                 logging.info('Отправка сообщения')
