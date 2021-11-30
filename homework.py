@@ -89,7 +89,7 @@ def parse_status(homework):
 
 
 def check_tokens():
-    """Проверка токенов"""
+    """Проверка токенов."""
     tokens = [PRACTICUM_TOKEN, TELEGRAM_TOKEN, CHAT_ID]
     for token in tokens:
         if token is None:
@@ -98,7 +98,7 @@ def check_tokens():
 
 
 def main():
-    """Запуск бота"""
+    """Запуск бота."""
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     current_timestamp = 0
     logging.info('Бот начинает работу')
