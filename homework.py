@@ -70,7 +70,7 @@ def get_api_answer(current_timestamp):
 def check_response(response):
     """Проверка запроса."""
     try:
-        homeworks = response.get('homeworks')
+        homeworks = response['homeworks']
         if len(homeworks) == 0:
             raise KeyError('Ошибка, нет домашек')
         return homeworks
@@ -80,8 +80,8 @@ def check_response(response):
 
 def parse_status(homework):
     """Получение статуса работы."""
-    homework_name = homework.get('homework_name')
-    homework_status = homework.get('status')
+    homework_name = homework['homework_name']
+    homework_status = homework['status']
     if homework_status in HOMEWORK_STATUSES:
         return f'Изменился статус проверки работы "{homework_name}".' \
                f' {HOMEWORK_STATUSES[homework_status]}'
