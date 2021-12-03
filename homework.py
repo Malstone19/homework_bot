@@ -4,7 +4,6 @@ import time
 from logging.handlers import RotatingFileHandler
 from http import HTTPStatus
 import requests
-from requests.exceptions import RequestException
 
 import telegram
 from dotenv import load_dotenv
