@@ -69,13 +69,14 @@ def get_api_answer(current_timestamp):
 
 def check_response(response):
     """Проверка запроса."""
-    try:
-        homeworks = response['homeworks']
-        if len(homeworks) == 0:
-            raise KeyError('Ошибка, нет домашек')
-        return homeworks
-    except RequestException:
-        raise RequestException('Ошибка запроса')
+    if not response:
+        raise TypeError('Пришла пустота')
+    if not isinstance(response, dict):
+        raise TypeError('Ожидаем словарь')
+    if not isinstance(response.get('homeworks'), list):
+        raise TypeError('Ожидаем список')
+
+    return response.get('homeworks')
 
 
 def parse_status(homework):
