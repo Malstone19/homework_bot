@@ -1,10 +1,10 @@
 import logging
 import os
 import time
-from logging.handlers import RotatingFileHandler
 from http import HTTPStatus
-import requests
+from logging.handlers import RotatingFileHandler
 
+import requests
 import telegram
 from dotenv import load_dotenv
 
@@ -38,12 +38,12 @@ HOMEWORK_STATUSES = {
 
 def send_message(bot, message: str) -> None:
     """Отправка сообщения от бота."""
-    logging.info(f'Отправка сообщения: {message}'
-                 f' на CHAT_ID: {TELEGRAM_CHAT_ID}')
+    logger.info(f'Отправка сообщения: {message}'
+                f' на CHAT_ID: {TELEGRAM_CHAT_ID}')
     try:
         return bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message)
     except telegram.error.TelegramError as sending_error:
-        logging.error(f'Ошибка отправки Telegram: {sending_error}')
+        logger.error(f'Ошибка отправки Telegram: {sending_error}')
 
 
 def get_api_answer(current_timestamp):
@@ -62,7 +62,7 @@ def get_api_answer(current_timestamp):
                 f'Ошибка {homework_statuses}')
         return homework_statuses.json()
     except (requests.exceptions.RequestException, ValueError) as error:
-        logging.error(f'Ошибка {error}')
+        logger.error(f'Ошибка {error}')
     return {}
 
 
@@ -72,10 +72,11 @@ def check_response(response):
         raise TypeError('Пришла пустота')
     if not isinstance(response, dict):
         raise TypeError('Ожидаем словарь')
-    if not isinstance(response.get('homeworks'), list):
+    homeworks = response.get('homeworks')
+    if not isinstance(homeworks, list) or homeworks is None:
         raise TypeError('Ожидаем список')
 
-    return response.get('homeworks')
+    return homeworks
 
 
 def parse_status(homework):
@@ -83,8 +84,8 @@ def parse_status(homework):
     homework_name = homework['homework_name']
     homework_status = homework['status']
     if homework_status in HOMEWORK_STATUSES:
-        return f'Изменился статус проверки работы "{homework_name}".' \
-               f' {HOMEWORK_STATUSES[homework_status]}'
+        return (f'Изменился статус проверки работы "{homework_name}".'
+                f' {HOMEWORK_STATUSES[homework_status]}')
     else:
         raise ValueError('Ошибка неверное значение статуса при парсинге')
 
@@ -102,24 +103,24 @@ def main():
     """Запуск бота."""
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     current_timestamp = int(time.time())
-    logging.info('Бот начинает работу')
+    logger.info('Бот начинает работу')
     while True:
         try:
             new_homework = get_api_answer(current_timestamp)
-            logging.info('checking response')
+            logger.info('checking response')
             if check_response(new_homework):
-                logging.info('Отправка сообщения')
+                logger.info('Отправка сообщения')
                 send_message(
                     bot, parse_status(new_homework.get('homeworks')[0])
                 )
             current_timestamp = new_homework.get(
                 'current_date', current_timestamp
             )
-            logging.info('Запрос создан')
+            logger.info('Запрос создан')
             time.sleep(RETRY_TIME)
         except Exception as error:
             logger.error(error, exc_info=True)
-            logging.error('Ошибка пустой список, либо ошибка сервера')
+            logger.error('Ошибка пустой список, либо ошибка сервера')
             time.sleep(RETRY_TIME)
             continue
 
