@@ -84,12 +84,12 @@ def parse_status(homework):
     try:
         homework_name = homework['homework_name']
         homework_status = homework['status']
-        if homework_status not in HOMEWORK_STATUSES:
-            raise ValueError('Ошибка неверное значение статуса при парсинге')
+    except Exception as error:
+        raise KeyError(f'Ошибка {error}')
+    if homework_status in HOMEWORK_STATUSES:
         return (f'Изменился статус проверки работы "{homework_name}".'
                 f' {HOMEWORK_STATUSES[homework_status]}')
-    except Exception as error:
-        logger.error(f'Ошибка {error}')
+    raise ValueError('Ошибка неверное значение статуса при парсинге')
 
 
 def check_tokens():
