@@ -82,11 +82,12 @@ def check_response(response):
 def parse_status(homework):
     """Получение статуса работы."""
     homework_name = homework['homework_name']
-    if homework_name is None:
+    if homework['homework_name'] is None:
         raise ValueError('Ошибка нет значения имени')
-    homework_status = homework['status']
-    if homework_status is None:
+    if homework['status'] is None:
         raise ValueError('Ошибка нет значения статуса')
+    homework_name = homework['homework_name']
+    homework_status = homework['status']
     if homework_status in HOMEWORK_STATUSES:
         return (f'Изменился статус проверки работы "{homework_name}".'
                 f' {HOMEWORK_STATUSES[homework_status]}')
