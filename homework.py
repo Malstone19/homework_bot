@@ -90,7 +90,6 @@ def parse_status(homework):
                 f' {HOMEWORK_STATUSES[homework_status]}')
     except Exception as error:
         logger.error(f'Ошибка {error}')
-    return 'Не удалось найти значения в словаре'
 
 
 def check_tokens():
